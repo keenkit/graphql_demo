@@ -1,5 +1,6 @@
 package com.howtographql.hackernews;
 
+import com.howtographql.hackernews.models.Link;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -25,7 +26,13 @@ public class LinkRepository {
     public List<Link> getAllLinks() {
         List<Link> allLinks = new ArrayList<>();
         for (Document doc : links.find()) {
-            allLinks.add(link(doc));
+            allLinks.add(new Link(
+                    doc.get("_id").toString(),
+                    doc.getString("url"),
+                    doc.getString("description"),
+                    doc.getString("postedBy")
+                )
+            );
         }
         return allLinks;
     }
@@ -34,6 +41,7 @@ public class LinkRepository {
         Document doc = new Document();
         doc.append("url", link.getUrl());
         doc.append("description", link.getDescription());
+        doc.append("postedBy", link.getUserId());
         links.insertOne(doc);
     }
 

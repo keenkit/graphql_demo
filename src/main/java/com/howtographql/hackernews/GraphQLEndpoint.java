@@ -5,6 +5,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.howtographql.hackernews.models.User;
+import com.howtographql.hackernews.resolvers.LinkResolver;
+import com.howtographql.hackernews.resolvers.Mutation;
+import com.howtographql.hackernews.resolvers.Query;
+import com.howtographql.hackernews.resolvers.SigninResolver;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import graphql.schema.GraphQLSchema;
@@ -48,7 +53,8 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
                 .resolvers(
                         new Query(linkRepository),
                         new Mutation(linkRepository, userRepository),
-                        new SigninResolver())
+                        new SigninResolver(),
+                        new LinkResolver(userRepository))
                 .build()
                 .makeExecutableSchema();
     }

@@ -1,6 +1,8 @@
-package com.howtographql.hackernews;
+package com.howtographql.hackernews.resolvers;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.howtographql.hackernews.models.Link;
+import com.howtographql.hackernews.LinkRepository;
 
 import java.util.List;
 
