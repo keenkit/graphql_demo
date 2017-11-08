@@ -6,10 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.howtographql.hackernews.models.User;
-import com.howtographql.hackernews.resolvers.LinkResolver;
-import com.howtographql.hackernews.resolvers.Mutation;
-import com.howtographql.hackernews.resolvers.Query;
-import com.howtographql.hackernews.resolvers.SigninResolver;
+import com.howtographql.hackernews.resolvers.*;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import graphql.schema.GraphQLSchema;
@@ -24,11 +21,13 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
 
     private static final LinkRepository linkRepository;
     private static final UserRepository userRepository;
+    private static final VoteRepository voteRepository;
 
     static {
         MongoDatabase mongo = new MongoClient().getDatabase("hackernews");
         linkRepository = new LinkRepository(mongo.getCollection("links"));
         userRepository = new UserRepository(mongo.getCollection("users"));
+        voteRepository = new VoteRepository(mongo.getCollection("votes"));
 
     }
 
@@ -52,9 +51,11 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
                 .file("schema.graphqls")
                 .resolvers(
                         new Query(linkRepository),
-                        new Mutation(linkRepository, userRepository),
+                        new Mutation(linkRepository, userRepository, voteRepository),
                         new SigninResolver(),
-                        new LinkResolver(userRepository))
+                        new LinkResolver(userRepository),
+                        new VoteResolver(linkRepository, userRepository))
+                .scalars(Scalars.dateTime)
                 .build()
                 .makeExecutableSchema();
     }
