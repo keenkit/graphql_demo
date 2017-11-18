@@ -1,5 +1,9 @@
 # Graphql Demo
 
+## prerequisites
+- JDK1.8
+- MongoDB 
+
 ## Steps to run the project
 Step1. Create the login user by:
 
